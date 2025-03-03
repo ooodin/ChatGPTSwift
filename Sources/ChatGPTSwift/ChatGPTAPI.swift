@@ -290,7 +290,7 @@ public class ChatGPTAPI: @unchecked Sendable {
             language: String = "en"
         ) async throws -> String {
             var request = URLRequest(
-                url: URL(string: "https://api.openai.com/v1/audio/transcriptions")!)
+                url: URL(string: "\(urlString)/v1/audio/transcriptions")!)
             let boundary: String = UUID().uuidString
             request.timeoutInterval = 30
             request.httpMethod = "POST"
