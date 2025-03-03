@@ -42,7 +42,7 @@ public class ChatGPTAPI: @unchecked Sendable {
         .init(role: "system", content: content)
     }
 
-    public init(apiUrl: String) {
+    public init(apiUrl: String, apiKey: String) {
         self.urlString = apiUrl
         
         let clientTransport: ClientTransport
@@ -54,7 +54,7 @@ public class ChatGPTAPI: @unchecked Sendable {
         self.client = Client(
             serverURL: URL(string: self.urlString)!,
             transport: clientTransport,
-            middlewares: [])
+            middlewares: [AuthMiddleware(apiKey: apiKey)])
     }
 
     private func generateMessages(from text: String, systemText: String) -> [Message] {
