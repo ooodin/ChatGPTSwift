@@ -31,8 +31,7 @@ public class ChatGPTAPI: @unchecked Sendable {
     private let urlString: String
     private let gptEncoder = GPTEncoder()
     public private(set) var historyList = [Message]()
-    private var apiKey: String
-
+    
     let dateFormatter: DateFormatter = {
         let df = DateFormatter()
         df.dateFormat = "YYYY-MM-dd"
@@ -43,24 +42,9 @@ public class ChatGPTAPI: @unchecked Sendable {
         .init(role: "system", content: content)
     }
 
-    public init(apiUrl: String = "https://api.openai.com/v1", apiKey: String) {
-        self.apiKey = apiKey
+    public init(apiUrl: String) {
         self.urlString = apiUrl
         
-        let clientTransport: ClientTransport
-        #if os(Linux)
-            clientTransport = AsyncHTTPClientTransport()
-        #else
-            clientTransport = URLSessionTransport()
-        #endif
-        self.client = Client(
-            serverURL: URL(string: self.urlString)!,
-            transport: clientTransport,
-            middlewares: [AuthMiddleware(apiKey: apiKey)])
-    }
-
-    public func updateAPIKey(_ apiKey: String) {
-        self.apiKey = apiKey
         let clientTransport: ClientTransport
         #if os(Linux)
             clientTransport = AsyncHTTPClientTransport()
@@ -310,9 +294,9 @@ public class ChatGPTAPI: @unchecked Sendable {
             let boundary: String = UUID().uuidString
             request.timeoutInterval = 30
             request.httpMethod = "POST"
-            request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
             request.setValue(
-                "multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+                "multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type"
+            )
 
             let bodyBuilder = MultipartFormDataBodyBuilder(
                 boundary: boundary,
